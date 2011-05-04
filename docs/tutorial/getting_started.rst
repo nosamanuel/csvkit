@@ -66,7 +66,7 @@ Nothing is ever easy when you're working with government data. We've got one mor
     ALABAMA,AL,7738,5779,2075,3102,883,5,"19,582"
     ALASKA,AK,1781,561,170,164,28,1,"2,705"
 
-As you can see, this multiple header lines.  We need to modify this file to fix the issue, but as a matter of best practice let's backup our originals first::
+As you can see, this one has multiple header lines.  We need to modify this file to fix the issue, but as a matter of best practice let's backup our originals first::
 
     $ cp 2009.csv 2009_original.csv
     $ cp 2010_csv 2010_original.csv
