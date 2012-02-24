@@ -2,6 +2,7 @@
 
 import os
 import sys
+import tempfile
 
 from csvkit import sql
 from csvkit import table
@@ -24,8 +25,16 @@ class CSVSQL(CSVKitUtility):
                             help='Specify a name for the table to be created. If omitted, the filename (minus extension) will be used.')
         self.argparser.add_argument('--no-constraints', dest='no_constraints', action='store_true',
                             help='Generate a schema without length limits or null checks. Useful when sampling big tables.')
+        self.argparser.add_argument('--shell', dest='shell', action='store_true',
+                            help='Insert data directly to a temporary SQLite database and open a shell.')
 
     def main(self):
+        if self.args.shell:
+            self.args.insert = True
+            executable_name = 'sqlite3'
+            db = tempfile.mktemp()
+            self.args.connection_string = 'sqlite:///%s' % db  # TODO: Test on windows
+
         if self.args.table_name:
             table_name = self.args.table_name
         elif self.args.file != sys.stdin:
@@ -67,6 +76,13 @@ class CSVSQL(CSVKitUtility):
         else:
             sql_table = sql.make_table(csv_table, table_name, self.args.no_constraints)
             self.output_file.write((u'%s\n' % sql.make_create_table_statement(sql_table, dialect=self.args.dialect)).encode('utf-8'))
+
+        if self.args.shell:
+            args = [executable_name, db]
+            if os.name == 'nt':
+                sys.exit(os.system(" ".join(args)))
+            else:
+                os.execvp(executable_name, args)
 
 if __name__ == '__main__':
     utility = CSVSQL()
