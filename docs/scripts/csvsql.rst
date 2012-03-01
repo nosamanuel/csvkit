@@ -41,6 +41,8 @@ Generate SQL statements for a CSV file or create execute those statements direct
                             omitted, the filename (minus extension) will be used.
       --no-constraints      Generate a schema without length limits or null
                             checks. Useful when sampling big tables.
+      --shell               Insert data directly to a temporary SQLite database
+                            and open a shell.
 
 Also see: :doc:`common_arguments`.
 
@@ -62,3 +64,7 @@ For large tables it may not be practical to process the entire table. One soluti
     
     $ head -n 20 examples/realdata/FY09_EDU_Recipients_by_State.csv | csvsql --no-constraints --table fy09
 
+
+Query the data directly in a sqlite shell (requires the sqlite3 executable)::
+
+    $ csvsql --shell --table fy09 examples/realdata/FY09_EDU_Recipients_by_State.csv
